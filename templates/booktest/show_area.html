@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分页显示</title>
+</head>
+<body>
+<h1>省份城市及直辖区</h1>
+<ul>
+    {% for area in page %}
+        <li>{{ area.atitle }}</li>
+    {% endfor %}
+</ul>
+{% if page.has_previous %}
+    <a href="/show_area{{ page.previous_page_number }}">上一页</a>
+{% endif %}
+    {% for index in page.paginator.page_range %}
+        {% if page.number == index%}
+            {{ index }}
+        {% else %}
+            <a href="/show_area{{ index }}">{{ index }}</a>
+        {% endif %}
+
+    {% endfor %}
+{% if page.has_next %}
+    <a href="/show_area{{ page.next_page_number }}">下一页</a>
+{% endif %}
+</body>
+</html>

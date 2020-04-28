@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>areas</title>
+    <script src="/static/js/jquery-1.12.4.min.js"></script>
+    <script>
+        $(function () {
+            //发起一个ajax请求获取所有升级地区信息, 获取信息使用get，修改的话使用post
+            //这是发起get得ajax请求得简写   $.post()是post得简写
+            //
+            $.get('/prov', function (data) {
+                //回调函数
+                res = data.data
+                //遍历数组获取数据
+                prov = $('#sname')
+                /* 这是传统循环
+                for(i=0; i<res.length; i++){
+                    id = res[i][0]
+                    title = res[i][1]
+                    option_str = '<option value="' + id + '">' + title + '</option>'
+                    prov.append(option_str)
+                }*/
+                //这是新的循环
+                $.each(res, function (index, item) {
+                    //console(index, item)
+                    id = item[0]
+                    title = item[1]
+                    option_str = '<option value="' + id + '">' + title + '</option>'
+                    prov.append(option_str)
+                })
+            })
+            //绑定下拉列表框改变的事件 ,获取市级信息
+            $('#sname').change(function () {
+                //发起一个ajax请求获取信息
+                //获取选择省的id
+                prov_id = $(this).val()
+                $.get('city'+prov_id, function (data) {
+                    res = data.data
+                    //获取市下拉列表框, 和县的下拉列表框
+                    cname = $('#cname')
+                    //获取之后清空下拉列表框 县的也要清空
+                    cname.empty().append("<option>---请选择城市---</option>")
+                    // 前段时单线程，不能同时获取然后同时清空，需要获取一个删除一个获取一个删除一个
+                    xname = $('#xname')
+                    //获取之后清空下拉列表框
+                    xname.empty().append("<option>---请选择县---</option>")
+                    $.each(res, function (index, item) {
+                        id = item[0]
+                        title = item[1]
+                        option_str = '<option value="' + id + '">' + title + '</option>'
+                        cname.append(option_str)
+                    })
+                })
+            })
+            //绑定市的改变事件，获取县的信息
+            $('#cname').change(function () {
+                //发起一个ajax请求获取信息
+                //获取选择市的id
+                cname_id = $(this).val()
+                $.get('xian'+cname_id, function (data) {
+                    res = data.data
+                    //获取市下拉列表框
+                    xname = $('#xname')
+                    //获取之后清空下拉列表框
+                    xname.empty().append("<option>---请选择县---</option>")
+                    $.each(res, function (index, item) {
+                        id = item[0]
+                        title = item[1]
+                        option_str = '<option value="' + id + '">' + title + '</option>'
+                        xname.append(option_str)
+                    })
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+<select id="sname">
+    <option>---请选择省份---</option>
+</select>
+<select id="cname">
+    <option>---请选择城市---</option>
+</select>
+<select id="xname">
+    <option>---请选择县级---</option>
+</select>
+{#   <input type="" id="sname" value="---请选择省份----">#}
+{#   <input type="checkbox" id="cname" value="---请选择市------">#}
+{#   <input type="checkbox" id="xname" value="---请选择县-----">#}
+</body>
+</html>
